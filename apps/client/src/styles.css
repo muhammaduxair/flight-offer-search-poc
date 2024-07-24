@@ -1,1 +1,17 @@
+@import 'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css';
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@import 'primeng/resources/primeng.css';
+
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+p-autocomplete {
+  & > div {
+    @apply w-full;
+    & > input {
+      @apply bg-gray-50 border leading-normal border-gray-300 text-sm rounded-lg block w-full p-2.5 w-full;
+    }
+  }
+}

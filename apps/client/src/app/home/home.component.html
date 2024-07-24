@@ -1,0 +1,168 @@
+<section class="p-6 flex flex-col items-center">
+  <div class="md:w-[50%] flex flex-col">
+    <h1 class="font-bold text-3xl mb-8 mt-4 text-amber-500">
+      AI Travel POC | Search Cheapest Flights
+    </h1>
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+      <div class="col-span-2">
+        <label for="departure" class="block mb-2 text-sm font-medium"
+          >Departure</label
+        >
+        <p-autoComplete
+          [suggestions]="departureLocationsForAutocomplete"
+          (completeMethod)="searchLocation($event.query)"
+          [optionLabel]="'label'"
+          [optionValue]="'value'"
+          [(ngModel)]="selectedDeprature"
+          [placeholder]="'Departure'"
+        >
+          <ng-template let-location pTemplate="item">
+            <div class="flex items-center gap-2">
+              <i class="bx bxs-plane text-lg"></i>
+              <p class="font-semibold">{{ location.label }}</p>
+            </div>
+          </ng-template></p-autoComplete
+        >
+      </div>
+      <div class="col-span-2">
+        <label for="arrival" class="block mb-2 text-sm font-medium"
+          >Arrival</label
+        >
+        <p-autoComplete
+          [appendTo]="'body'"
+          [suggestions]="arrivalLocationsForAutocomplete"
+          (completeMethod)="searchLocation($event.query, 'arrival')"
+          [optionLabel]="'label'"
+          [optionValue]="'value'"
+          [(ngModel)]="selectedArrival"
+          [placeholder]="'Arrival'"
+        >
+          <ng-template let-location pTemplate="item">
+            <div class="flex items-center gap-2">
+              <i class="bx bxs-plane text-lg"></i>
+              <p class="font-semibold">{{ location.label }}</p>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+      <div>
+        <label for="from" class="block mb-2 text-sm font-medium">Date</label>
+        <input
+          type="date"
+          id="from"
+          class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          placeholder="From Date"
+          [(ngModel)]="fromDate"
+        />
+      </div>
+      <!-- <div>
+        <label for="to" class="block mb-2 text-sm font-medium">To Date</label>
+        <input
+          type="date"
+          id="to"
+          class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          placeholder="To Date"
+        />
+      </div> -->
+      <div class="col-span-2">
+        <button
+          type="button"
+          class="w-full focus:outline-none text-white bg-amber-400 hover:bg-amber-500 focus:ring-4 focus:ring-amber-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+          [ngClass]="{ 'pointer-events-none opacity-50': searchLoading }"
+          (click)="flightoffers()"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+
+    <hr class="bg-gray-300" />
+
+    <div class="flex flex-col gap-4 py-4">
+      @if (flightOffers.length) { @for (item of flightOffers; track $index) {
+      <div class="border border-gray-300 rounded-xl">
+        <div class="flex flex-col h-full md:flex-row gap-7">
+          <div
+            class="flex flex-1 flex-col items-center justify-center gap-1 p-5"
+          >
+            <p class="text-gray-600">From</p>
+            <h5 class="text-lg font-semibold">
+              {{ getDepartureDetail(item).cityName }}
+            </h5>
+            <p class="max-w-[15rem] line-clamp-2 text-center">
+              {{ getDepartureDetail(item).airportName }}
+            </p>
+          </div>
+          <div class="flex flex-1 flex-col items-center justify-center gap-1">
+            <div
+              class="grid bg-amber-400 rounded-full w-9 h-9 place-items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-4 h-4 text-white"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3.75 12a.75.75 0 01.75-.75h13.19l-5.47-5.47a.75.75 0 011.06-1.06l6.75 6.75a.75.75 0 010 1.06l-6.75 6.75a.75.75 0 11-1.06-1.06l5.47-5.47H4.5a.75.75 0 01-.75-.75z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <p class="text-center">
+              {{ getTotalStops(item) }}
+            </p>
+            <p class="mt-0 text-center">{{ getFullFlightDuartion(item) }}</p>
+          </div>
+          <div
+            class="flex flex-1 flex-col text-center items-center justify-center gap-1"
+          >
+            <p class="text-gray-600">To</p>
+            <h5 class="text-lg font-semibold">
+              {{ getArrivalDetail(item).cityName }}
+            </h5>
+            <p>{{ getArrivalDetail(item).airportName }}</p>
+          </div>
+          <div
+            class="flex flex-col items-center gap-1 p-6 bg-amber-50 rounded-r-xl md:w-48"
+          >
+            <p class="mt-0 font-semibold text-xl">
+              {{ item.price.grandTotal | currency : item.price.currency }}
+            </p>
+            <div class="mt-4">
+              <button
+                class="block px-4 py-2 mb-2 text-sm text-white bg-amber-400 rounded-md"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      } }@else { @if (searchLoading) {
+      <div role="status" class="flex justify-center">
+        <svg
+          aria-hidden="true"
+          class="w-12 h-12 text-gray-200 animate-spin fill-amber-400"
+          viewBox="0 0 100 101"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor"
+          />
+          <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill"
+          />
+        </svg>
+        <span class="sr-only">Loading...</span>
+      </div>
+      } @else {
+      <h4 class="font-semibold text-center text-gray-400">No Records Found</h4>
+      } }
+    </div>
+  </div>
+</section>

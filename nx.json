@@ -52,5 +52,21 @@
       "unitTestRunner": "jest"
     }
   },
-  "nxCloudAccessToken": "NzkxMDM1ZDEtZGUyYy00YTdjLWE5ZDEtODQ5M2VmYWRkNTc5fHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "NzkxMDM1ZDEtZGUyYy00YTdjLWE5ZDEtODQ5M2VmYWRkNTc5fHJlYWQtd3JpdGU=",
+  "plugins": [
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview"
+      }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint"
+      }
+    }
+  ]
 }
